@@ -35,7 +35,7 @@ KautilInclude(PROJECT_HEADER)
 
 
 
-if(NOT DEFINED kautil_general_POPULATED)
+if(NOT DEFINED sqlite_sqlite_POPULATED)
     FetchContent_Declare(sqlite_sqlite
             GIT_REPOSITORY https://source.developers.google.com/p/c-and-cpp/r/sqlite
             GIT_TAG master
@@ -45,3 +45,7 @@ if(NOT DEFINED kautil_general_POPULATED)
             )
     list(APPEND fetch_content sqlite_sqlite)
 endif()
+
+FetchContent_MakeAvailable(${fetch_content})
+
+
