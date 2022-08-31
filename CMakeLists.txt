@@ -64,6 +64,7 @@ foreach(pkg IN LISTS find_packages)
 endforeach()
 KautilUnSetPackageDir("${find_packages}" )
 
+
 file(GLOB __sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 KautilExportableLib(
     COMPONENT sqlite3
@@ -75,8 +76,10 @@ KautilExportableLib(
     INSTALL_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
     INCLUDE_DST include/kautil/sqlite3
     CMAKE_DST ${__cmake_dst}
+    DEPENDS build_sqlite
 )
 
+return()
 
 
 #add_custom_target(
