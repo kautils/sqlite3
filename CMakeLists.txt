@@ -32,3 +32,16 @@ endif()
 include(${kautil_cmake_SOURCE_DIR}/functions/functions.cmake)
 set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects)
 KautilInclude(PROJECT_HEADER)
+
+
+
+if(NOT DEFINED kautil_general_POPULATED)
+    FetchContent_Declare(sqlite_sqlite
+            GIT_REPOSITORY https://source.developers.google.com/p/c-and-cpp/r/sqlite
+            GIT_TAG master
+            GIT_SHALLOW True
+            UPDATE_COMMAND ""
+            SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects/sqlite
+            )
+    list(APPEND fetch_content sqlite_sqlite)
+endif()
