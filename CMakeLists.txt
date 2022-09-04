@@ -11,9 +11,9 @@ set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
 
 
 if(DEFINED CMAKE_DST)
-    set(__cmake_dst ${CMAKE_DST})
+    set(__cmake_dst ${CMAKE_DST}/kautil_sqlite3)
 else()
-    set(__cmake_dst ${CMAKE_CURRENT_SOURCE_DIR})
+    set(__cmake_dst ${CMAKE_CURRENT_SOURCE_DIR}/kautil_sqlite3)
 endif()
 
 include(FetchContent)
@@ -32,7 +32,6 @@ endif()
 include(${kautil_cmake_SOURCE_DIR}/functions/functions.cmake)
 set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects)
 KautilInclude(PROJECT_HEADER)
-
 
 
 if(NOT DEFINED sqlite_sqlite_POPULATED)
