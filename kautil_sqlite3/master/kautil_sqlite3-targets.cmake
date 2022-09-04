@@ -46,7 +46,7 @@ add_library(kautil::sqlite3 STATIC IMPORTED)
 
 set_target_properties(kautil::sqlite3 PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/mnt/nvme0n1/ramdisk/tips/dirty.kautil.finance/third_party/projects/kautil_sqlite3/master/include"
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:sqlite_sqlite_3.39.2>;sqlite_sqlite_3.39.2"
+  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:sqlite::sqlite_sqlite_3.39.2>;sqlite::sqlite_sqlite_3.39.2"
 )
 
 # Import target "kautil::sqlite3" for configuration "Debug"
@@ -56,8 +56,24 @@ set_target_properties(kautil::sqlite3 PROPERTIES
   IMPORTED_LOCATION_DEBUG "/mnt/nvme0n1/ramdisk/tips/build/clang/_deps/kautil_sqlite3_master-build/libkautil_kautil_sqlite3_master.a"
   )
 
-# This file does not depend on other imported targets which have
-# been exported from the same project but in a separate export set.
+# Make sure the targets which have been exported in some other
+# export set exist.
+unset(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
+foreach(_target "sqlite::sqlite_sqlite_3.39.2" )
+  if(NOT TARGET "${_target}" )
+    set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets "${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets} ${_target}")
+  endif()
+endforeach()
+
+if(DEFINED ${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
+  if(CMAKE_FIND_PACKAGE_NAME)
+    set( ${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+    set( ${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "The following imported targets are referenced, but are missing: ${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets}")
+  else()
+    message(FATAL_ERROR "The following imported targets are referenced, but are missing: ${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets}")
+  endif()
+endif()
+unset(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
