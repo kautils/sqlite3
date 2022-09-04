@@ -34,6 +34,9 @@ set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects)
 KautilInclude(PROJECT_HEADER)
 
 
+
+
+
 set(tag_sqlite 3.39.2)
 if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
     FetchContent_Declare(sqlite_sqlite_${tag_sqlite}
@@ -46,27 +49,6 @@ if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
     list(APPEND fetch_content sqlite_sqlite_${tag_sqlite})
 endif()
 FetchContent_MakeAvailable(${fetch_content})
-
-
-
-#list(APPEND find_packages sqlite_sqlite)
-#KautilSetPackageDir("${find_packages}" CMAKE_DIR ${__cmake_dst})
-#foreach(pkg IN LISTS find_packages)
-#    KautilForceGenerateTargetsCMake(
-#            PACKAGE ${pkg}
-#            CMAKE_DST ${__cmake_dst}
-#            CONFIGURE_COMMAND
-#            cmake
-#            -S ${kautil_general_SOURCE_DIR}
-#            -B ${kautil_general_BINARY_DIR}
-#            -DCMAKE_DST=${__cmake_dst}
-#    )
-#    find_package(${pkg} REQUIRED)
-#endforeach()
-#KautilUnSetPackageDir("${find_packages}" )
-
-
-
 
 if( EXISTS ${sqlite_sqlite_${tag_sqlite}}/install/lib/libsqlite3.a OR
     EXISTS ${sqlite_sqlite_${tag_sqlite}}/install/lib/libsqlite3.so 
@@ -85,6 +67,7 @@ KautilExportableLib(
     OUTPUT_NAME sqlite3
     TARGET_SOURCES ${__sources}
     TARGET_LINK_MODULES sqlite_sqlite_3.39.2
+    INCLUDE_BUILD_INTERFACE ${sqlite_sqlite_${tag_sqlite}}/install/include
     INSTALL_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
     INCLUDE_DST include/kautil/sqlite3
     CMAKE_DST ${__cmake_dst}
