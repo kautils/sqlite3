@@ -50,8 +50,8 @@ if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
 endif()
 FetchContent_MakeAvailable(${fetch_content})
 
-if( EXISTS ${sqlite_sqlite_${tag_sqlite}}/install/lib/libsqlite3.a OR
-    EXISTS ${sqlite_sqlite_${tag_sqlite}}/install/lib/libsqlite3.so 
+if( EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.a OR
+    EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.so 
         )
     set(__depends "")
 else()
@@ -67,7 +67,7 @@ KautilExportableLib(
     OUTPUT_NAME sqlite3
     TARGET_SOURCES ${__sources}
     TARGET_LINK_MODULES sqlite_sqlite_3.39.2
-    INCLUDE_BUILD_INTERFACE ${sqlite_sqlite_${tag_sqlite}}/install/include
+    INCLUDE_BUILD_INTERFACE ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/include
     INSTALL_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
     INCLUDE_DST include/kautil/sqlite3
     CMAKE_DST ${__cmake_dst}
