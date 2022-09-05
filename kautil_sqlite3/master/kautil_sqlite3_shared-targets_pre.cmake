@@ -46,20 +46,20 @@ add_library(kautil::kautil_sqlite3_shared_master SHARED IMPORTED)
 
 set_target_properties(kautil::kautil_sqlite3_shared_master PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/mnt/nvme0n1/ramdisk/tips/dirty.kautil.finance/third_party/projects/kautil_sqlite3/master/include"
-  INTERFACE_LINK_LIBRARIES "sqlite::sqlite_sqlite_3.39.2"
+  INTERFACE_LINK_LIBRARIES "sqlite::sqlite_sqlite_shared_3.39.2"
 )
 
 # Import target "kautil::kautil_sqlite3_shared_master" for configuration "Debug"
 set_property(TARGET kautil::kautil_sqlite3_shared_master APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(kautil::kautil_sqlite3_shared_master PROPERTIES
-  IMPORTED_LOCATION_DEBUG "/mnt/nvme0n1/ramdisk/tips/build/clang/_deps/kautil_sqlite3_master-build/libkautil_kautil_sqlite3_shared_master.so.0.0.0.0"
+  IMPORTED_LOCATION_DEBUG "/mnt/nvme0n1/ramdisk/tips/build/zapcc/_deps/kautil_sqlite3_master-build/libkautil_kautil_sqlite3_shared_master.so.0.0.0.0"
   IMPORTED_SONAME_DEBUG "libkautil_kautil_sqlite3_shared_master.so.0"
   )
 
 # Make sure the targets which have been exported in some other
 # export set exist.
 unset(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets)
-foreach(_target "sqlite::sqlite_sqlite_3.39.2" )
+foreach(_target "sqlite::sqlite_sqlite_shared_3.39.2" )
   if(NOT TARGET "${_target}" )
     set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets "${${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE_targets} ${_target}")
   endif()

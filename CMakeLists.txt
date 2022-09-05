@@ -66,7 +66,7 @@ KautilExportableLib(
     TARGET sqlite3
     OUTPUT_NAME sqlite3
     TARGET_SOURCES ${__sources}
-    TARGET_LINK_LIBRARIES sqlite_sqlite_3.39.2
+    TARGET_LINK_LIBRARIES sqlite_sqlite_shared_3.39.2
     INCLUDE_BUILD_INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
     INSTALL_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
     INCLUDE_DST include/kautil/sqlite3
