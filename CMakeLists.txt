@@ -40,7 +40,7 @@ KautilInclude(PROJECT_HEADER)
 set(tag_sqlite 3.39.2)
 if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
     FetchContent_Declare(sqlite_sqlite_${tag_sqlite}
-        GIT_REPOSITORY ${__kautil_git_url_suffix}/sqlite
+        GIT_REPOSITORY ${__kautil_git_url_prefix_c_and_cc}/sqlite
         GIT_TAG ${tag_sqlite}
         GIT_SHALLOW True
         UPDATE_COMMAND ""
