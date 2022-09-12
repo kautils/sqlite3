@@ -13,7 +13,7 @@ set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
 if(DEFINED CMAKE_DST)
     set(__cmake_dst ${CMAKE_DST}/kautil_sqlite3)
 else()
-    set(__cmake_dst ${CMAKE_CURRENT_SOURCE_DIR}/kautil_sqlite3)
+    set(__cmake_dst ${CMAKE_CURRENT_SOURCE_DIR}/cmake/kautil_sqlite3)
 endif()
 
 include(FetchContent)
@@ -35,8 +35,6 @@ KautilInclude(PROJECT_HEADER)
 
 
 
-
-
 set(tag_sqlite 3.39.2)
 if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
     FetchContent_Declare(sqlite_sqlite_${tag_sqlite}
@@ -50,14 +48,17 @@ if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
 endif()
 FetchContent_MakeAvailable(${fetch_content})
 
-if( EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.a OR
-    EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.so 
-        )
-    set(__depends "")
-else()
-    set(__depends sqlite_sqlite_${tag_sqlite}_build)
-endif()
 
+if(MINGW)
+else()
+    if( EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.a OR
+        EXISTS ${sqlite_sqlite_${tag_sqlite}_SOURCE_DIR}/install/lib/libsqlite3.so 
+            )
+        set(__depends "")
+    else()
+        set(__depends sqlite_sqlite_${tag_sqlite}_build)
+    endif()
+endif()
 
 file(GLOB __sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 KautilExportableLib(
