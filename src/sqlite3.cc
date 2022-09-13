@@ -2,7 +2,6 @@
 #include <cassert>
 #include <iostream>
 #include "sqlite3.h"
-//#include "../third_party/projects/sqlite/install/include/sqlite3.h"
 
 
 
