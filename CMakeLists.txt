@@ -23,7 +23,7 @@ if(NOT DEFINED kautil_cmake_POPULATED)
             GIT_TAG        master
             GIT_SHALLOW True
             UPDATE_COMMAND ""
-            SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects/kautil_cmake
+            SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/${__kautil_fetche_content_source_dir}/kautil_cmake
             )
     FetchContent_MakeAvailable(kautil_cmake)
     list(APPEND fetch_content kautil_cmake)
@@ -41,7 +41,7 @@ if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
         GIT_TAG ${tag_sqlite}
         GIT_SHALLOW True
         UPDATE_COMMAND ""
-        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects/sqlite/${tag_sqlite}
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${__kautil_fetche_content_source_dir}/sqlite/${tag_sqlite}
         )
     FetchContent_MakeAvailable(sqlite_sqlite_${tag_sqlite})
 endif()
