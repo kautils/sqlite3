@@ -19,7 +19,7 @@ endif()
 include(FetchContent)
 if(NOT DEFINED kautil_cmake_POPULATED)
     FetchContent_Declare(kautil_cmake
-            GIT_REPOSITORY https://source.developers.google.com/p/c-and-cc/r/kautil_cmake
+            GIT_REPOSITORY /mnt/nvme0n1/git.local/current/c-and-cc/kautil_cmake/
             GIT_TAG        master
             GIT_SHALLOW True
             UPDATE_COMMAND ""
