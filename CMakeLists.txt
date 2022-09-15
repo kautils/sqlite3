@@ -23,7 +23,7 @@ if(NOT DEFINED kautil_cmake_POPULATED)
             GIT_TAG        master
             GIT_SHALLOW True
             UPDATE_COMMAND ""
-            SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/${__kautil_fetche_content_source_dir}/kautil_cmake
+            SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/kautil_cmake
             )
     FetchContent_MakeAvailable(kautil_cmake)
     list(APPEND fetch_content kautil_cmake)
