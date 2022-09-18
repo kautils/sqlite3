@@ -13,7 +13,7 @@ set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
 if(DEFINED CMAKE_DST)
     set(__cmake_dst ${CMAKE_DST}/kautil_sqlite3)
 else()
-    set(__cmake_dst ${CMAKE_CURRENT_SOURCE_DIR}/cmake/kautil_sqlite3)
+    set(__cmake_dst ${CMAKE_CURRENT_BINARY_DIR}/cmake/kautil_sqlite3)
 endif()
 
 include(FetchContent)
