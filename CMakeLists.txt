@@ -24,7 +24,7 @@ if (NOT DEFINED kautil_cmake_POPULATED)
     if(DEFINED KAUTIL_SOURCE_DIR)
         set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/cmake/kautil_cmake)
     else()
-        set(path_to_cmake_local ${CMAKE_CURRENT_SOURCE_DIR}//cmake/kautil_cmake)
+        set(path_to_cmake_local ${CMAKE_CURRENT_SOURCE_DIR}//cmake/kautil_cmake/master)
     endif()
 
 
