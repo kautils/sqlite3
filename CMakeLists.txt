@@ -16,22 +16,39 @@ else()
     set(__cmake_dst ${CMAKE_CURRENT_BINARY_DIR}/cmake/kautil_sqlite3)
 endif()
 
+
 include(FetchContent)
-if(NOT DEFINED kautil_cmake_POPULATED)
-    FetchContent_Declare(kautil_cmake
-            GIT_REPOSITORY /mnt/nvme0n1/git.local/current/c-and-cc/kautil_cmake/
-            GIT_TAG        master
+if (NOT DEFINED kautil_cmake_POPULATED)
+
+    set(path_to_cmake_remote /mnt/nvme0n1/git.local/current/c-and-cc/kautil_cmake )
+    if(DEFINED KAUTIL_SOURCE_DIR)
+        set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/cmake/kautil_cmake)
+    else()
+        set(path_to_cmake_local ${CMAKE_CURRENT_SOURCE_DIR}//cmake/kautil_cmake)
+    endif()
+
+
+    if(EXISTS /mnt/nvme0n1/ramdisk/repos/tips/dirty.wine.general/cmake/kautil_cmake/.git)
+        set(__dl_command "")
+    else()
+        set(__dl_command git clone ${path_to_cmake_remote} ${path_to_cmake_local})
+    endif()
+
+    FetchContent_Declare( kautil_cmake
+            GIT_REPOSITORY "${path_to_cmake_remote}"
+            GIT_TAG master
             GIT_SHALLOW True
+            DOWNLOAD_COMMAND ${__dl_command}
             UPDATE_COMMAND ""
-            SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/kautil_cmake
+            SOURCE_DIR "${path_to_cmake_local}"
             )
     FetchContent_MakeAvailable(kautil_cmake)
-    list(APPEND fetch_content kautil_cmake)
-endif()
-
+endif ()
 include(${kautil_cmake_SOURCE_DIR}/functions/functions.cmake)
 set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects)
 KautilInclude(PROJECT_HEADER)
+
+
 
 
 set(tag_sqlite 3.39.2)
