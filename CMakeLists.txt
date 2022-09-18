@@ -22,13 +22,13 @@ if (NOT DEFINED kautil_cmake_POPULATED)
 
     set(path_to_cmake_remote /mnt/nvme0n1/git.local/current/c-and-cc/kautil_cmake )
     if(DEFINED KAUTIL_SOURCE_DIR)
-        set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/cmake/kautil_cmake/master)
+        set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/third_party/projects/kautil_cmake/master)
     else()
         set(path_to_cmake_local ${CMAKE_CURRENT_SOURCE_DIR}/third_party/projects/kautil_cmake/master)
     endif()
 
 
-    if(EXISTS /mnt/nvme0n1/ramdisk/repos/tips/dirty.wine.general/cmake/kautil_cmake/.git)
+    if(EXISTS /mnt/nvme0n1/ramdisk/repos/tips/dirty.wine.general/third_party/projects/kautil_cmake/.git)
         set(__dl_command "")
     else()
         set(__dl_command git clone ${path_to_cmake_remote} ${path_to_cmake_local})
