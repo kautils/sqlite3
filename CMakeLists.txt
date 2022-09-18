@@ -22,7 +22,7 @@ if (NOT DEFINED kautil_cmake_POPULATED)
 
     set(path_to_cmake_remote /mnt/nvme0n1/git.local/current/c-and-cc/kautil_cmake )
     if(DEFINED KAUTIL_SOURCE_DIR)
-        set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/cmake/kautil_cmake)
+        set(path_to_cmake_local ${KAUTIL_SOURCE_DIR}/cmake/kautil_cmake/master)
     else()
         set(path_to_cmake_local ${CMAKE_CURRENT_SOURCE_DIR}//cmake/kautil_cmake/master)
     endif()
