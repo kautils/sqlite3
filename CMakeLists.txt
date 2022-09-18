@@ -28,7 +28,7 @@ if (NOT DEFINED kautil_cmake_POPULATED)
     endif()
 
 
-    if(EXISTS /mnt/nvme0n1/ramdisk/repos/tips/dirty.wine.general/third_party/projects/kautil_cmake/.git)
+    if(EXISTS ${path_to_cmake_local})
         set(__dl_command "")
     else()
         set(__dl_command git clone ${path_to_cmake_remote} ${path_to_cmake_local})
