@@ -91,7 +91,6 @@ KautilExportableLib(
     DEPENDS "${__depends}"
 )
 
-return()
 
 
 
