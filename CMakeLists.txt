@@ -51,17 +51,18 @@ KautilInclude(PROJECT_HEADER)
 
 
 
+
+unset(fetch_content_list)
 set(tag_sqlite 3.39.2)
-if(NOT DEFINED sqlite_sqlite_${tag_sqlite}_POPULATED)
-    FetchContent_Declare(sqlite_sqlite_${tag_sqlite}
+KautilFetchContentDeclare( fetch_content_list
         GIT_REPOSITORY ${__kautil_git_url_prefix_c_and_cc}/sqlite
         GIT_TAG ${tag_sqlite}
         GIT_SHALLOW True
         UPDATE_COMMAND ""
-        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${__kautil_fetche_content_source_dir}/sqlite/${tag_sqlite}
+        SOURCE_DIR_PREFIX ${KAUTIL_SOURCE_DIR}/${__kautil_fetche_content_prefix}
         )
-    FetchContent_MakeAvailable(sqlite_sqlite_${tag_sqlite})
-endif()
+kautil_FetchContent_MakeAvailable("${fetch_content_list}")
+
 
 
 if(MINGW)
