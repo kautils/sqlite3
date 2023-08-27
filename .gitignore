@@ -1,0 +1,3 @@
+.idea/**
+build/**
+third_party/c11_string_allocator/**

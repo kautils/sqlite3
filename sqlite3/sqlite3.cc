@@ -10,8 +10,6 @@ namespace kautil{
 namespace database {
 
 
-
-
 struct sqlite3_exception : std::exception{
     std::string msg;
     sqlite3_exception(int size,const char * fmt,...){
