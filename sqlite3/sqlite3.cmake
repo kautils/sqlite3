@@ -24,6 +24,7 @@ set(__libs ${KAUTIL_LIBSQLITE3_LIBNAME}
         kautil::sqlite3::serialize::static
         kautil::sqlite3::preprocesssors::static
         kautil::sqlite3::alter::static
+        kautil::c11_string_allocator::v0::static
         )
 
 set(__t ${__main})

@@ -4,6 +4,7 @@
 
 static_assert(sizeof(sqlite3_int64) == sizeof(rowid_t));
 
+#include "c11_string_allocator/c11_string_allocator.h"
 
 
 namespace kautil{
