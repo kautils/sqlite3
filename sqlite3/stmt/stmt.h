@@ -18,10 +18,6 @@ struct Sqlite3StmtInternal;
 struct Sqlite3Stmt{
     
     using sqlite3_destructor_type = void (*)(void*); /*  0 : SQLITE_STATIC, 1: SQLITE_TRANSIENT . default is SQLITE_STATIC */
-    using memman_pos_t = uint64_t(void * ptr_of_c11_string);
-    using memman_register_t= void* (void * ptr_of_c11_string,uint64_t pos,const void * data);
-    using memman_pointer_t= void* (void * ptr_of_c11_string,uint64_t pos);
-    
     
     virtual ~Sqlite3Stmt() noexcept;
     virtual ::sqlite3_stmt * raw() const noexcept;

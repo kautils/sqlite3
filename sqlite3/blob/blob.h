@@ -40,12 +40,25 @@ public :
     virtual ::sqlite3* connection();
     
     
+    
+    
 private:
-    friend Blob* sqlite3_blob(::sqlite3 * database,const char schema[], const char table[],const char colname[]) noexcept;
+    friend Blob* sqlite3_blob(::sqlite3 * database,const char schema[], const char table[],const char colname[]
+        ,void * memman_object
+        ,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+        ,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+        ,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)                          
+    
+    ) noexcept;
     BlobInternal * m = nullptr;
 };
 
-[[nodiscard]]Blob* sqlite3_blob(::sqlite3 * database,const char schema[], const char table[],const char colname[]) noexcept;
+[[nodiscard]]Blob* sqlite3_blob(::sqlite3 * database,const char schema[], const char table[],const char colname[]
+    ,void * memman_object
+    ,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+    ,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+    ,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)
+) noexcept;
 
 } // sqlite3
 } //namespace database{
