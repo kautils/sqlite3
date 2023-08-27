@@ -8,20 +8,32 @@ if(NOT DEFINED KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY_TAG)
 endif()
 
 if(NOT DEFINED KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY)
-    set(KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY "D:/arrange/origin/c11_string_allocator")
+    set(KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY https://github.com/kautils/c11_string_allocator.git)
 endif()
 
 set(target_repo ${KAUTIL_THIRD_PARTY_DIR}/c11_string_allocator/${KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY_TAG})
 
-if(NOT EXISTS "${target_repo}/.git")
+
+macro(execute_git_command)
+    cmake_parse_arguments( EXEC_GIT "" "DIR" "COMMANDS" ${ARGN})
     execute_process(
-        COMMAND git clone ${KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY} ${target_repo} 
-        RESULT_VARIABLE exit_code 
-        # OUTPUT_FILE nul ERROR_FILE nul # want to discard message 
+        COMMAND ${EXEC_GIT_COMMANDS} 
+        WORKING_DIRECTORY "${EXEC_GIT_DIR}" 
+        RESULT_VARIABLE exit_code
+        OUTPUT_FILE nul ERROR_FILE nul # want to discard message 
     )
-    if(${exit_code} EQUAL 128)
+    if(NOT ${exit_code} EQUAL 0)
         message(FATAL_ERROR "fail to clone c11_string_allocator")
     endif()
-endif()
+    unset(exit_code)
+endmacro()
 
+if(NOT EXISTS "${target_repo}/.git")
+    file(MAKE_DIRECTORY ${target_repo})
+    execute_git_command(DIR ${target_repo} COMMANDS git init)
+    execute_git_command(DIR ${target_repo} COMMANDS git remote add origin ${KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY})
+    execute_git_command(DIR ${target_repo} COMMANDS git fetch origin --tags ${KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY_TAG} --depth=1)
+    execute_git_command(DIR ${target_repo} COMMANDS git checkout tags/${KAUTIL_C11_STRING_ALLOCATOR_REPOSITORY_TAG})
+endif()
 add_subdirectory(${target_repo})
+unset(target_repo)

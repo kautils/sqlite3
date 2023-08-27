@@ -30,14 +30,21 @@ void release_stmt(Sqlite3Stmt * stmt){ if(stmt) stmt->release(); }
 struct Sqlite3Internal{
     Sqlite3Internal(){};
     ~Sqlite3Internal(){
-        
-        auto stmts = reinterpret_cast<::sqlite3_stmt**>(mem_stmt.data());
-        for(auto i = 0; i < mem_stmt.size() / sizeof(uintptr_t); ++i){
-            if(stmts[i]){ sqlite3_finalize(stmts[i]);stmts[i] = 0; }
+
+        {// release stmt to avoid memory leak. it seemed to be impossible to release stmt object after close database connection.
+            auto stmts = reinterpret_cast<::sqlite3_stmt**>(mem_stmt.data());
+            for(auto i = 0; i < mem_stmt.size() / sizeof(uintptr_t); ++i){
+                if(stmts[i]){ sqlite3_finalize(stmts[i]);stmts[i] = 0; }
+            }
+            mem_stmt.resize(0);
         }
-        mem_stmt.resize(0);
-        
-        
+
+        {// relase blob. the reason of this is the same as stmt's one.
+            auto blobs = reinterpret_cast<::sqlite3_blob**>(mem_blob.data());  
+            for(auto i = 0; i < mem_blob.size()/sizeof(uintptr_t); ++i){
+                if(blobs[i])sqlite3_blob_close(blobs[i]);
+            }
+        }
         
         if (auto_close_ && con)sqlite3_close(con); 
         release_stmt(begin_transaction);
@@ -52,6 +59,7 @@ struct Sqlite3Internal{
     };
     
     std::string mem_stmt;
+    std::string mem_blob;
     ::sqlite3 *con = nullptr;
     bool auto_close_ = true;
     std::string schema="main"; // main, temp. i don't know this well yet.
@@ -72,7 +80,7 @@ const char *Sqlite3::schema() { return m->schema.data(); }
 const char *Sqlite3::file_name() { return sqlite3_db_filename((::sqlite3*)connection(), m->schema.data()); }
 
 [[nodiscard]] sqlite3::Blob* Sqlite3::blob(const char schema[], const char table[],const char colname[]){
-    return kautil::database::sqlite3::sqlite3_blob(m->con, schema, table, colname);
+    return kautil::database::sqlite3::sqlite3_blob(m->con, schema, table, colname,&m->mem_blob,c11_string_current_pos,c11_string_register,c11_string_pointer);
 }
 
 
@@ -353,6 +361,8 @@ extern "C" void extern_finalize(kautil::database::Sqlite3* m ){
 
 
 int tmain_kautil_sqlite3_shared(){
+    //while(true){
+    
     auto op = kautil::database::sqlite3::sqlite_options(); // only a partial wrapper of sqlite options. this is for extern module.  
     auto sql = kautil::database::Sqlite3{":memory:"};
     sql.foreign_key(true); // pragma foreign key on
@@ -445,7 +455,9 @@ int tmain_kautil_sqlite3_shared(){
     
     
     op->release();
-    
+        
+    //}
+
     
     return 0;
 }
