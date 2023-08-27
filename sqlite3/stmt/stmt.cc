@@ -5,9 +5,12 @@
 
 struct kautil::database::Sqlite3StmtInternal{
     friend Sqlite3Stmt * sqlite3_stmt(const char query[],bool * error, int nByte, const char **pzTail);
-    ::sqlite3_stmt * stmt = 0;
     sqlite3 * database = 0;
     uint64_t pos=0;
+    void * memman_object = 0;
+    uint64_t (*memman_pos)(void * ptr_of_c11_string) = 0;
+    void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data) = 0;
+    void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos) = 0;
 };
 
 
@@ -21,24 +24,34 @@ int kautil::database::Sqlite3Stmt::reset()noexcept { return sqlite3_reset(raw())
 
 
 using namespace kautil::database;
-Sqlite3Stmt * kautil::database::sqlite3_stmt(sqlite3 * dbcon
-                                             ,const char query[]
-                                             ,bool * error
-                                             , int nByte
-                                             , const char **pzTail
-                                             ) noexcept {
-    auto stmt = (::sqlite3_stmt *) nullptr;
+
+
+Sqlite3Stmt * kautil::database::sqlite3_stmt(sqlite3 * dbcon,const char query[],bool * error, int nByte, const char **pzTail
+,void * memman_object
+,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)) noexcept{
+        auto stmt = (::sqlite3_stmt *) nullptr;
     if (sqlite3_prepare_v2(dbcon, query, nByte, &stmt, pzTail) != SQLITE_OK){
         if(error) *error =true;
         return nullptr;
     }else {
-        Sqlite3Stmt * res = new Sqlite3Stmt{};
+        auto res = new Sqlite3Stmt{};
+        {
+            res->m->pos = memman_pos(memman_object);
+            memman_register(memman_object,res->m->pos,stmt);
+            res->m->memman_object = memman_object;
+            res->m->memman_pos = memman_pos;
+            res->m->memman_register = memman_register;
+            res->m->memman_pointer = memman_pointer;
+        }
         res->m->database=dbcon;
-        res->m->stmt = stmt;
         if(error) *error =false;
         return res;
     }
+    
 }
+
 
 
 bool kautil::database::Sqlite3Stmt::set_int(int const& i , int const& v )const noexcept{ return sqlite3_bind_int(raw(), i, v) == SQLITE_OK; }
@@ -51,14 +64,15 @@ bool kautil::database::Sqlite3Stmt::set_zeroblob(const int &i, int n)const noexc
 
 
 ::sqlite3_stmt * kautil::database::Sqlite3Stmt::raw()const noexcept{
-    return m->stmt;
+    return reinterpret_cast<::sqlite3_stmt*>(m->memman_pointer(m->memman_object,m->pos));
 }
 
 
 void kautil::database::Sqlite3Stmt::release()noexcept{
-    if(m->stmt){
-        sqlite3_finalize(m->stmt);
-        m->stmt=0;
+    auto stmt = reinterpret_cast<::sqlite3_stmt*>(m->memman_pointer(m->memman_object,m->pos));
+    if(stmt){
+        sqlite3_finalize(stmt);
+        m->memman_register(m->memman_object,m->pos, nullptr);
     }
     delete this;
 }
@@ -68,13 +82,14 @@ kautil::database::Sqlite3Stmt::Sqlite3Stmt() : m(new Sqlite3StmtInternal){  }
 kautil::database::Sqlite3Stmt::~Sqlite3Stmt() { delete m; }
 
 
-
-int tmain_kautil_sqlite_stmt_static(sqlite3 * con,int(*__printf)(const char * fmt,...)){
-//        auto con = test_data("tmain_kautil_sqlite_stmt_static.sqlite",SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE);
-    auto create = kautil::database::sqlite3_stmt(con,"create table if not exists test([data] blob,[i64] integer)",nullptr,-1,nullptr);
+int tmain_kautil_sqlite_stmt_static(sqlite3 * con, int(*__printf)(const char*,...), void * memman_object
+        ,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+        ,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+        ,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)){
+    auto create = kautil::database::sqlite3_stmt(con,"create table if not exists test([data] blob,[i64] integer)",nullptr,-1,nullptr,memman_object,memman_pos,memman_register,memman_pointer);
     create->step(true);
     
-    auto insert = kautil::database::sqlite3_stmt(con,"insert into test([data],[i64]) values(?,?)",nullptr,-1, nullptr);
+    auto insert = kautil::database::sqlite3_stmt(con,"insert into test([data],[i64]) values(?,?)",nullptr,-1, nullptr,memman_object,memman_pos,memman_register,memman_pointer);
     const char *data = "some";
     auto i64 = 123;
     if(insert){ 
@@ -82,7 +97,15 @@ int tmain_kautil_sqlite_stmt_static(sqlite3 * con,int(*__printf)(const char * fm
         insert->set_int64(2,i64);
         insert->step(true);
     
-        auto select = kautil::database::sqlite3_stmt(con,"select * from test", nullptr,-1, nullptr);
+        auto select = kautil::database::sqlite3_stmt(con,"select * from test"
+                                                     ,nullptr
+                                                     ,-1
+                                                     , nullptr
+                                                     ,memman_object
+                                                     ,memman_pos
+                                                     ,memman_register
+                                                     ,memman_pointer
+                                                     );
         for(;;){
             auto res = select->step(false);
             if(res != SQLITE_ROW){

@@ -41,12 +41,21 @@ struct Sqlite3Stmt{
 private:
     Sqlite3Stmt();
     Sqlite3StmtInternal * m = 0;
-    friend Sqlite3Stmt * sqlite3_stmt(sqlite3 * dbcon,const char query[],bool * error, int nByte, const char **pzTail) noexcept;
+    friend Sqlite3Stmt * sqlite3_stmt(sqlite3 * dbcon,const char query[],bool * error, int nByte, const char **pzTail
+        ,void * memman_object
+        ,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+        ,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+        ,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)) noexcept;
+
 };
 
 
 
-[[nodiscard]] Sqlite3Stmt * sqlite3_stmt(sqlite3 * dbcon,const char query[],bool * error, int nByte, const char **pzTail) noexcept;
+[[nodiscard]] Sqlite3Stmt * sqlite3_stmt(sqlite3 * dbcon,const char query[],bool * error, int nByte, const char **pzTail
+    ,void * memman_object
+    ,uint64_t (*memman_pos)(void * ptr_of_c11_string)
+    ,void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data)
+    ,void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos)) noexcept;
 
 
 

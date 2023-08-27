@@ -1,7 +1,6 @@
 #include "../sqlite3/sqlite3.h"
 #include <sqlite3.h>
 #include <string>
-
 static_assert(sizeof(sqlite3_int64) == sizeof(rowid_t));
 
 #include "c11_string_allocator/c11_string_allocator.h"
@@ -31,9 +30,16 @@ void release_stmt(Sqlite3Stmt * stmt){ if(stmt) stmt->release(); }
 struct Sqlite3Internal{
     Sqlite3Internal(){};
     ~Sqlite3Internal(){
-        if (auto_close_ && con){
-            sqlite3_close(con);
-        } 
+        
+        auto stmts = reinterpret_cast<::sqlite3_stmt**>(mem_stmt.data());
+        for(auto i = 0; i < mem_stmt.size() / sizeof(uintptr_t); ++i){
+            if(stmts[i]){ sqlite3_finalize(stmts[i]);stmts[i] = 0; }
+        }
+        mem_stmt.resize(0);
+        
+        
+        
+        if (auto_close_ && con)sqlite3_close(con); 
         release_stmt(begin_transaction);
         release_stmt(end_transaction);
         release_stmt(roll_back);
@@ -45,6 +51,7 @@ struct Sqlite3Internal{
         release_stmt(vcm_on);
     };
     
+    std::string mem_stmt;
     ::sqlite3 *con = nullptr;
     bool auto_close_ = true;
     std::string schema="main"; // main, temp. i don't know this well yet.
@@ -219,7 +226,9 @@ bool Sqlite3::foreign_key(bool sw){
 
 
 
-Sqlite3Stmt * Sqlite3::compile(const char query[],bool * error, int nByte, const char **pzTail) { return kautil::database::sqlite3_stmt(m->con, query, error, nByte, pzTail); }
+Sqlite3Stmt * Sqlite3::compile(const char query[],bool * error, int nByte, const char **pzTail) { 
+    return kautil::database::sqlite3_stmt(m->con, query, error, nByte, pzTail,&m->mem_stmt, c11_string_current_pos,c11_string_register,c11_string_pointer);
+}
 Sqlite3Stmt * Sqlite3::compile_allow_asterisk(const char query[], int nByte, const char **pzTail) {
     /// @brief
     /// in my environment, using asterisk as arg of selfdefined function like "select self_defined_function(*)", the amount of column is always 0.
