@@ -1,7 +1,4 @@
 
-
-
-
 unset(__main) 
 unset(__libs)
 unset(__tmain)
