@@ -1,6 +1,4 @@
 
-
-
 include(${CMAKE_CURRENT_LIST_DIR}/test_data/test_data.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/stmt/stmt.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/blob/blob.cmake)
