@@ -1,5 +1,20 @@
 
 
+if(NOT DEFINED KAUTIL_LIBSQLITE3_LIBDIR)
+    set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/bin)
+endif()
+
+if(NOT DEFINED KAUTIL_LIBSQLITE3_INCLUDE_DIR)
+    set(KAUTIL_LIBSQLITE3_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/include")
+endif()
+
+if(NOT DEFINED KAUTIL_LIBSQLITE3_LIBNAME)
+    set(KAUTIL_LIBSQLITE3_LIBNAME sqlite3)
+endif()
+
+
+
+
 
 include(${CMAKE_CURRENT_LIST_DIR}/test_data/test_data.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/stmt/stmt.cmake)
