@@ -1,4 +1,7 @@
 
+include(sqlite3/sqlite3.cmake)
+
+
 unset(__main) 
 unset(__libs)
 unset(__tmain)
