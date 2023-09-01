@@ -5,89 +5,52 @@ project(KautilSqlite3
         )
 set(CMAKE_CXX_STANDARD 17)
 
-macro(CMakeFetchKautilModule prfx)
-    
-    if(NOT DEFINED KAUTIL_THIRD_PARTY_DIR)
-        set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party)
-        file(MAKE_DIRECTORY "${KAUTIL_THIRD_PARTY_DIR}")
-    endif()
-    
-    if(NOT DEFINED KAUTIL_THREAD_MAX)
-        set(KAUTIL_THREAD_MAX 1)
-    endif()
-    
-    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE" "GIT;REMOTE;BRANCH;TAG;HASH" "" ${ARGV})
-    list(APPEND unsetter_prfx ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG)
-    
-    list(APPEND unsetter __force_option __verbose_option __uri __remote __tag)
-    set(__uri ${${prfx}_GIT})
-    set(__remote ${${prfx}_REMOTE})
-    set(__branch ${${prfx}_BRANCH})
-    set(__tag ${${prfx}_TAG})
-    set(__hash ${${prfx}_HASH})
-    if(${${prfx}_FORCE_UPDATE}) 
-        string(APPEND __force_option FORCE_UPDATE)
-    endif()
-    if(${${prfx}_VERBOSE})
-        string(APPEND __verbose_option VERBOSE)
-        include(CmakePrintHelpers)
-        foreach(__var ${unsetter})
-            cmake_print_variables(${__var})
-        endforeach()
-    endif()
-    
-        
-    if(NOT EXISTS ${KAUTIL_THIRD_PARTY_DIR}/cmake/CMakeGitCloneMinimal.cmake)
-        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${KAUTIL_THIRD_PARTY_DIR}/cmake/CMakeGitCloneMinimal.cmake")
-    endif()
-    
-    include("${KAUTIL_THIRD_PARTY_DIR}/cmake/CMakeGitCloneMinimal.cmake")
-    
-    CMakeGitCloneMinimal( ${prfx} 
-            REPOSITORY_NAME ${prfx} 
-            REPOSITORY_REMOTE ${__remote}  
-            REPOSITORY_URI ${__uri}
-            DESTINATION "${KAUTIL_THIRD_PARTY_DIR}/repository"
-            TAG ${__tag}
-            HASH ${__hash}
-            BRANCH ${__branch}
-            ${__force_option}
-            ${__verbose_option}
-            )
-    
-    if((NOT ${__force_option} STREQUAL "") OR (NOT DEFINED CACHE{${prfx}}))
-        file(MAKE_DIRECTORY ${${prfx}}/build)
-        CMakeExecuteCommand(execgit DIR ${${prfx}} COMMAND cmake -S . -B ${${prfx}}/build -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}' ASSERT)
-        CMakeExecuteCommand(execgit DIR ${${prfx}} COMMAND cmake --build ${${prfx}}/build -j ${KAUTIL_THREAD_MAX} ASSERT)
-        CMakeExecuteCommand(execgit DIR ${${prfx}} COMMAND cmake --install ${${prfx}}/build --prefix ${KAUTIL_THIRD_PARTY_DIR} ASSERT)
-        set(${prfx} ${${prfx}} CACHE STRING "" FORCE)
-        file(GLOB mod_paths ${KAUTIL_THIRD_PARTY_DIR}/lib/cmake/*)
-        list(APPEND CMAKE_PREFIX_PATH ${mod_paths})
-        list(REMOVE_DUPLICATES  CMAKE_PREFIX_PATH)
-    endif()
 
-    foreach(__var ${unsetter})
-        unset(${__var})
-    endforeach()
-    unset(unsetter)
-    foreach(__var ${unsetter_prfx})
-        unset(${__var})
-    endforeach()
-    unset(unsetter_prfx)
+set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/bin)
+set(KAUTIL_LIBSQLITE3_LIBNAME sqlite3)
 
-endmacro()
 
+if(NOT DEFINED KAUTIL_THIRD_PARTY_DIR)
+    set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_BINARY_DIR})
+    file(MAKE_DIRECTORY "${KAUTIL_THIRD_PARTY_DIR}")
+endif()
+if(NOT DEFINED KAUTIL_THREAD_MAX)
+    set(KAUTIL_THREAD_MAX 1)
+endif()
+
+
+if(NOT EXISTS ${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/CMakeFetchKautilModule.cmake)
+    file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeFetchKautilModule/v0.0.1/CMakeFetchKautilModule.cmake "${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/CMakeFetchKautilModule.cmake")
+endif()
+include(${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/CMakeFetchKautilModule.cmake)
+
+
+set(number_thread 2)
 CMakeFetchKautilModule(c11_string_allocator
         GIT https://github.com/kautils/c11_string_allocator.git 
         REMOTE origin 
         TAG v0.0.1
-        #BRANCH master
-        #HASH bb0c08f47366b3bb6dd940bb0eaa9071be6955d9
-        #FORCE_UPDATE
-        #VERBOSE
+        CMAKE_CONFIGURE_OPTION -DSOME="SOME" # -S and -B is automatically filled. it is possilbe to specify other options from here.
+        CMAKE_BUILD_OPTION -j ${number_thread}
         )
+
+CMakeFetchKautilModule(c11_string_allocator
+        GIT https://github.com/kautils/c11_string_allocator.git 
+        REMOTE origin 
+        HASH bb0c08f47366b3bb6dd940bb0eaa9071be6955d9
+        CMAKE_BUILD_OPTION -j ${number_thread}
+        )
+
+CMakeFetchKautilModule(split_view_iterator
+        GIT https://github.com/kautils/split_view_iterator.git 
+        REMOTE origin 
+        BRANCH master
+        CMAKE_BUILD_OPTION -j ${number_thread}
+        )
+
+
 find_package(KautilC11StringAllocator.0.0.1.static REQUIRED)
-include(extern.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/extern.cmake)
 
 
 
