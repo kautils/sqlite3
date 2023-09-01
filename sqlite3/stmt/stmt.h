@@ -14,6 +14,7 @@ namespace kautil{
 namespace database {
 
 
+
 struct Sqlite3StmtInternal;
 struct Sqlite3Stmt{
     

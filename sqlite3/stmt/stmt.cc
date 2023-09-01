@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 
 
+
 struct kautil::database::Sqlite3StmtInternal{
     friend Sqlite3Stmt * sqlite3_stmt(const char query[],bool * error, int nByte, const char **pzTail);
     sqlite3 * database = 0;
@@ -12,7 +13,6 @@ struct kautil::database::Sqlite3StmtInternal{
     void * (*memman_register)(void * ptr_of_c11_string,uint64_t pos,const void * data) = 0;
     void * (*memman_pointer)(void * ptr_of_c11_string,uint64_t pos) = 0;
 };
-
 
 
 int kautil::database::Sqlite3Stmt::step(bool reset ) const noexcept{

@@ -16,12 +16,15 @@ add_library(${__t} STATIC)
 unset(srcs)
 file(GLOB srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 target_sources(${__t} PRIVATE ${srcs})
-target_link_libraries(${__t} PRIVATE ${__libs})
 target_include_directories(${__t} PRIVATE ${__include})
 add_library(${__alias} ALIAS ${__t})
 
 set(__t ${__tmain})
 add_executable(${__t})
 target_sources(${__t} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/unit_test.cc)
-target_link_libraries(${__t} PRIVATE ${__alias} kautil::sqlite3::test_data::static kautil::c11_string_allocator::0.0.1::static )
+target_link_directories(${__t} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
+target_link_libraries(${__t} PUBLIC ${__alias} kautil::sqlite3::test_data::static kautil::c11_string_allocator::0.0.1::static )
 target_compile_definitions(${__t} PRIVATE ${__tmain_mc})
+
+
+

@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
-project(KautilSqlite3
+set(__version 2.0.1.0)
+project(KautilSqlite3.${__version}
         LANGUAGES C CXX
-        VERSION 2.0.1.0
+        VERSION ${__version}
         )
+unset(__version)
 set(CMAKE_CXX_STANDARD 17)
 
-
-set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/bin)
-set(KAUTIL_LIBSQLITE3_LIBNAME sqlite3)
+set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/lib CACHE STRING "path to libdir which includes sqlite" FORCE)
+set(KAUTIL_LIBSQLITE3_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_3.42.0/include CACHE STRING "name of sqlite3 lib")
+set(KAUTIL_LIBSQLITE3_LIBNAME sqlite3 CACHE STRING "name of sqlite3 lib")
 
 
 if(NOT DEFINED KAUTIL_THIRD_PARTY_DIR)

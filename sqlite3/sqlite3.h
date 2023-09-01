@@ -10,6 +10,7 @@
 #include "./serialize/serialize.h"
 #include "./alter/alter.h"
 
+
 struct sqlite3;
 typedef struct sqlite3 sqlite3;
 
