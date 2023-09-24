@@ -7,8 +7,6 @@ static_assert(sizeof(sqlite3_int64) == sizeof(rowid_t));
 
 
 
-
-
 namespace kautil{
 namespace database {
 
