@@ -6,6 +6,8 @@
 struct sqlite3;
 typedef sqlite3 sqlite3;
 
+
+
 namespace kautil{
 namespace database {
 namespace sqlite3{

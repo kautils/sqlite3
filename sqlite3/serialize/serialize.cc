@@ -4,6 +4,9 @@
 #include <string>
 #include "serialize.h"
 
+
+
+
 namespace kautil{
 namespace database {
 namespace sqlite3{

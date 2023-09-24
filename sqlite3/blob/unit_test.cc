@@ -6,7 +6,7 @@
 #include "test_data.h"
 #include <sqlite3.h>
 #include <stdint.h>
-#include "c11_string_allocator/c11_string_allocator.h"
+#include "kautil/c11_string_allocator/c11_string_allocator.h"
 #include <string>
 
 #ifdef TMAIN_KAUTIL_SQLITE3_BLOB_STATIC
