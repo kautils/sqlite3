@@ -50,6 +50,8 @@ set(${module_name}_common_pref
     DESTINATION_LIB_DIR lib
 )
 
+file(GLOB_RECURSE ${m}_install_headers ${CMAKE_CURRENT_LIST_DIR}/*.h )
+install(FILES ${${m}_install_headers} DESTINATION include/kauitl)
 
 CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE shared ${${module_name}_common_pref} )
 target_link_directories(${${module_name}_shared} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
