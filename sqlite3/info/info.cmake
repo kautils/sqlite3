@@ -11,7 +11,7 @@ git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/
 
 set(${m}_sqlite3_version 3.42.0)
 set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/mingw-w64-x86_64-sqlite3_${${m}_sqlite3_version}/lib CACHE STRING "path to libdir which includes sqlite" FORCE)
-set(KAUTIL_LIBSQLITE3_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/third_party/mingw-w64-x86_64-sqlite3_${${m}_sqlite3_version}/include CACHE STRING "name of sqlite3 lib" FORCE)
+set(KAUTIL_LIBSQLITE3_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/mingw-w64-x86_64-sqlite3_${${m}_sqlite3_version}/include CACHE STRING "name of sqlite3 lib" FORCE)
 set(KAUTIL_LIBSQLITE3_LIBNAME sqlite3_${${m}_sqlite3_version} CACHE STRING "name of sqlite3 lib" FORCE)
 
 set(module_name info)
@@ -28,9 +28,12 @@ set(${module_name}_common_pref
     DESTINATION_LIB_DIR lib
 )
 
+set(${m}_sqlite_lib_a ${KAUTIL_LIBSQLITE3_LIBDIR}/libsqlite3_${${m}_sqlite3_version}${CMAKE_STATIC_LIBRARY_SUFFIX})
+if(NOT EXISTS ${${m}_sqlite_lib_a})
+    file(COPY_FILE ${KAUTIL_LIBSQLITE3_LIBDIR}/libsqlite3${CMAKE_STATIC_LIBRARY_SUFFIX} ${${m}_sqlite_lib_a})
+endif()
 
-
-install(FILES "${${m}_sqlite3_a}" DESTINATION lib RENAME libsqlite3_${${m}_sqlite3_version}${CMAKE_STATIC_LIBRARY_SUFFIX})
+install(FILES "${KAUTIL_LIBSQLITE3_LIBDIR}/libsqlite3_${${m}_sqlite3_version}${CMAKE_STATIC_LIBRARY_SUFFIX}" DESTINATION lib)
 file(GLOB ${m}_sqlite3_includes ${KAUTIL_LIBSQLITE3_INCLUDE_DIR}/*.h)
 install(FILES ${${m}_sqlite3_includes} DESTINATION include/kautil/sqlite3)
 
