@@ -1,4 +1,21 @@
+set(m ${PROJECT_NAME}_m_evacu)
+list(APPEND ${m}_unsetter )
 
+if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
+    file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeKautilHeader/v0.0.1/CMakeKautilHeader.cmake ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
+endif()
+include(${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
+git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
+git_clone(https://raw.githubusercontent.com/kautils/CMakeFetchKautilModule/v0.0.1/CMakeFetchKautilModule.cmake)
+CMakeFetchKautilModule(c11_string_allocator
+        GIT https://github.com/kautils/c11_string_allocator.git 
+        REMOTE origin 
+        TAG v0.0.1)
+find_package(KautilC11StringAllocator.0.0.1.static REQUIRED)
+
+
+
+include(${CMAKE_CURRENT_LIST_DIR}/info/info.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/test_data/test_data.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/blob/blob.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/serialize/serialize.cmake)
@@ -6,33 +23,17 @@ include(${CMAKE_CURRENT_LIST_DIR}/preprocessors/preprocessors.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/alter/alter.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/stmt/stmt.cmake)
 
-
-if(NOT DEFINED ${KAUTIL_THIRD_PARTY_DIR})
-    set(KAUTIL_THIRD_PARTY_DIR ${CMAKE_BINARY_DIR})
-    file(MAKE_DIRECTORY "${KAUTIL_THIRD_PARTY_DIR}")
-endif()
-
-macro(git_clone url)
-    get_filename_component(file_name ${url} NAME)
-    if(NOT EXISTS ${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/${file_name})
-        file(DOWNLOAD ${url} "${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/${file_name}")
-    endif()
-    include("${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake/${file_name}")
-    unset(file_name)
-endmacro()
-
-git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
-
-set(unsetter module_name srcs libs)
+set(${m}_unsetter module_name srcs libs)
 set(module_name sqlite3)
 get_filename_component(__include_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 file(GLOB srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
-set(libs ${KAUTIL_LIBSQLITE3_LIBNAME}
-    kautil::sqlite3::stmt::static
-    kautil::sqlite3::blob::static
-    kautil::sqlite3::serialize::static
-    kautil::sqlite3::preprocesssors::static
-    kautil::sqlite3::alter::static
+set(libs 
+    kautil::sqlite3::info::${${PROJECT_NAME}.version}::interface
+    kautil::sqlite3::stmt::${${PROJECT_NAME}.version}::static
+    kautil::sqlite3::blob::${${PROJECT_NAME}.version}::static
+    kautil::sqlite3::serialize::${${PROJECT_NAME}.version}::static
+    kautil::sqlite3::preprocessors::${${PROJECT_NAME}.version}::static
+    kautil::sqlite3::alter::${${PROJECT_NAME}.version}::static
     kautil::c11_string_allocator::0.0.1::static)
 
 set(${module_name}_common_pref
@@ -44,32 +45,23 @@ set(${module_name}_common_pref
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
-        
     DESTINATION_INCLUDE_DIR include
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
 )
 
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/sqlite3.h DESTINATION include/kautil/sqlite3)
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/blob/blob.h DESTINATION include/kautil/sqlite3/blob)
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/alter/alter.h DESTINATION include/kautil/sqlite3/alter)
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/preprocessors/preprocessors.h DESTINATION include/kautil/sqlite3/preprocessors)
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/serialize/serialize.h DESTINATION include/kautil/sqlite3/serialize)
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/stmt/stmt.h DESTINATION include/kautil/sqlite3/stmt)
 
-CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE shared ${${module_name}_common_pref} )
-target_link_directories(${${module_name}_shared} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
-
-
-set(__t ${${module_name}_shared_tmain})
-add_executable(${__t})
-target_sources(${__t} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/unit_test.cc)
-target_link_libraries(${__t} PRIVATE ${${module_name}_shared} kautil::sqlite3::test_data::static)
-target_compile_definitions(${__t} PRIVATE ${${module_name}_shared_tmain_ppcs})
-
-foreach(__var ${unsetter})
-    unset(${__var})
+foreach(__lib shared static )
+    CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
+    target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
 endforeach()
+
+
+foreach(__v ${${m}_unsetter})
+    unset(${__v})
+endforeach()
+unset(${m}_unsetter)
+set(m ${${PROJECT_NAME}_m_evacu})
 
 
 
