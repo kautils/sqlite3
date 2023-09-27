@@ -40,19 +40,26 @@ set(libs
 list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx)
 
 
-set(${m}_prfx ${PROJECT_NAME})
 string(APPEND ${m}_findpkgs
-    "file(GLOB ${${m}_prfx}_files \"@CMAKE_CURRENT_LIST_DIR@/${${m}_prfx}/*Config.cmake\" )\n"
-    "foreach(__var ${${m}_prfx}_files)\n"
-    "    get_filename_component(${${m}_prfx}_fname \\$\\{__var} NAME)\n"
-    "    if((NOT ${${m}_prfx}_fname STREQUAL ${${m}_prfx}.staticConfig.cmake) AND (NOT ${${m}_prfx}_fname STREQUAL ${${m}_prfx}.sharedConfig.cmake))\n"
-    "    else()\n"
-    "        include(\\$\\{__var})\n"
-    "    endif()\n"
-    "endforeach()\n"
-    "unset(${${m}_prfx}_files)\n"
-    "unset(${${m}_prfx}_fname)\n"
+    "set(@PROJECT_NAME@Info.interface_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Info.interface REQUIRED)\n"
+    
+    "set(@PROJECT_NAME@Alters.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Alters.static REQUIRED)\n"
+    
+    "set(@PROJECT_NAME@Stmt.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Stmt.static REQUIRED)\n"
+    
+    "set(@PROJECT_NAME@Blob.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Blob.static REQUIRED)\n"
+    
+    "set(@PROJECT_NAME@Serialize.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Serialize.static REQUIRED)\n"
+    
+    "set(@PROJECT_NAME@Preprocessors.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
+    "find_package(@PROJECT_NAME@Preprocessors.static REQUIRED)\n"
 )
+
 
 set(${module_name}_common_pref
     MODULE_PREFIX kautil
@@ -63,7 +70,7 @@ set(${module_name}_common_pref
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
-    EXPORT_CONFIG_IN_ADDITIONAL_CONTENT ${${m}_findpkgs}
+    EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs}
     DESTINATION_INCLUDE_DIR include
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
