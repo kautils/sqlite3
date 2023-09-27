@@ -16,6 +16,7 @@ set(${module_name}_common_pref
     LINK_LIBS kautil::sqlite3::info::${${PROJECT_NAME}.version}::interface
     SOURCES ${srcs}
     EXPORT_NAME_PREFIX ${PROJECT_NAME}Serialize
+    EXPORT_NAME_CMAKE_DIR ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
         

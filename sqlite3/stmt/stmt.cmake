@@ -16,9 +16,9 @@ set(${module_name}_common_pref
     SOURCES ${srcs}
     LINK_LIBS kautil::sqlite3::info::${${PROJECT_NAME}.version}::interface
     EXPORT_NAME_PREFIX ${PROJECT_NAME}Stmt
+    EXPORT_NAME_CMAKE_DIR ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
-        
     DESTINATION_INCLUDE_DIR include/kautil/sqlite3
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib

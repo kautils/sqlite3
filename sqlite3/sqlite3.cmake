@@ -36,6 +36,7 @@ set(libs
     kautil::sqlite3::alter::${${PROJECT_NAME}.version}::static
     kautil::c11_string_allocator::0.0.1::static)
 
+
 set(${module_name}_common_pref
     MODULE_PREFIX kautil
     MODULE_NAME ${module_name}
@@ -49,6 +50,14 @@ set(${module_name}_common_pref
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
 )
+
+#
+#file(GLOB __files "R:/flow/build/android/install/lib/cmake/KautilSqlite3.2.0.1.0/*Config.cmake" )
+#foreach(__var ${__files})
+#    message(+++${__var})
+#    include(${__var})
+#endforeach()
+
 
 
 foreach(__lib shared static )
