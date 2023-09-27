@@ -52,6 +52,18 @@ set(${module_name}_common_pref
 )
 
 
+
+#file(GLOB __files "${CMAKE_CURRENT_LIST_DIR}/KautilSqlite3.2.0.1.0/*Config.cmake" )
+#foreach(__var ${__files})
+#    get_filename_component(__tes ${__var} NAME)
+#    if((NOT ${tes} STREQUAL "KautilSqlite3.2.0.1.0.staticConfig.cmake") AND (NOT ${tes} STREQUAL "KautilSqlite3.2.0.1.0.sharedConfig.cmake"))
+#    else()
+#        include(${__var})
+#    endif()
+#endforeach()
+
+
+
 foreach(__lib shared static )
     CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
     target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
