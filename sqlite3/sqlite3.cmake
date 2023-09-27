@@ -51,14 +51,6 @@ set(${module_name}_common_pref
     DESTINATION_LIB_DIR lib
 )
 
-#
-#file(GLOB __files "R:/flow/build/android/install/lib/cmake/KautilSqlite3.2.0.1.0/*Config.cmake" )
-#foreach(__var ${__files})
-#    message(+++${__var})
-#    include(${__var})
-#endforeach()
-
-
 
 foreach(__lib shared static )
     CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
