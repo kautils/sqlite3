@@ -1,3 +1,4 @@
+
 set(m ${PROJECT_NAME}_m_evacu)
 list(APPEND ${m}_unsetter )
 
@@ -36,6 +37,22 @@ set(libs
     kautil::sqlite3::alter::${${PROJECT_NAME}.version}::static
     kautil::c11_string_allocator::0.0.1::static)
 
+list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx)
+
+
+set(${m}_prfx ${PROJECT_NAME})
+string(APPEND ${m}_findpkgs
+    "file(GLOB ${${m}_prfx}_files \"@CMAKE_CURRENT_LIST_DIR@/${${m}_prfx}/*Config.cmake\" )\n"
+    "foreach(__var ${${m}_prfx}_files)\n"
+    "    get_filename_component(${${m}_prfx}_fname \\$\\{__var} NAME)\n"
+    "    if((NOT ${${m}_prfx}_fname STREQUAL ${${m}_prfx}.staticConfig.cmake) AND (NOT ${${m}_prfx}_fname STREQUAL ${${m}_prfx}.sharedConfig.cmake))\n"
+    "    else()\n"
+    "        include(\\$\\{__var})\n"
+    "    endif()\n"
+    "endforeach()\n"
+    "unset(${${m}_prfx}_files)\n"
+    "unset(${${m}_prfx}_fname)\n"
+)
 
 set(${module_name}_common_pref
     MODULE_PREFIX kautil
@@ -46,23 +63,11 @@ set(${module_name}_common_pref
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
+    EXPORT_CONFIG_IN_ADDITIONAL_CONTENT ${${m}_findpkgs}
     DESTINATION_INCLUDE_DIR include
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
 )
-
-
-
-#file(GLOB __files "${CMAKE_CURRENT_LIST_DIR}/KautilSqlite3.2.0.1.0/*Config.cmake" )
-#foreach(__var ${__files})
-#    get_filename_component(__tes ${__var} NAME)
-#    if((NOT ${tes} STREQUAL "KautilSqlite3.2.0.1.0.staticConfig.cmake") AND (NOT ${tes} STREQUAL "KautilSqlite3.2.0.1.0.sharedConfig.cmake"))
-#    else()
-#        include(${__var})
-#    endif()
-#endforeach()
-
-
 
 foreach(__lib shared static )
     CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
