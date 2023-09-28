@@ -37,9 +37,7 @@ set(libs
     kautil::sqlite3::alter::${${PROJECT_NAME}.version}::static
     kautil::c11_string_allocator::0.0.1::static)
 
-list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx)
-
-
+list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx ${m}_sqlite3_headers)
 string(APPEND ${m}_findpkgs
     "set(@PROJECT_NAME@Info.interface_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Info.interface REQUIRED)\n"
@@ -75,6 +73,9 @@ set(${module_name}_common_pref
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
 )
+
+file(GLOB ${m}_sqlite3_headers ${CMAKE_CURRENT_LIST_DIR}/*.h)
+install(FILES ${${m}_sqlite3_headers} DESTINATION include/kautil/sqlite3)
 
 foreach(__lib shared static )
     CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
