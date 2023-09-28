@@ -1,4 +1,3 @@
-
 set(m ${PROJECT_NAME}_m_evacu)
 list(APPEND ${m}_unsetter )
 
@@ -9,13 +8,13 @@ include(${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
 git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
 git_clone(https://raw.githubusercontent.com/kautils/CMakeFetchKautilModule/v0.0.1/CMakeFetchKautilModule.cmake)
 git_clone(https://raw.githubusercontent.com/kautils/CMakeFindKautilModule/v0.0.1/CMakeFindKautilModule.cmake)
-CMakeFetchKautilModule(c11_string_allocator
-        GIT https://github.com/kautils/c11_string_allocator.git 
-        REMOTE origin 
-        TAG v0.0.1
-        )
-CMakeFindKautilModule(c11_string_allocator NAME KautilC11StringAllocator.0.0.1.static)
 
+if(${BUILD_SHARED_LIBS})
+    set(${m}_install_dependencies NO_INSTALL)
+endif()
+
+CMakeFetchKautilModule(c11_string_allocator GIT https://github.com/kautils/c11_string_allocator.git REMOTE origin TAG v0.0.1)
+CMakeFindKautilModule(c11_string_allocator NAME KautilC11StringAllocator.0.0.1.static ${${m}_install_dependencies})
 
 
 include(${CMAKE_CURRENT_LIST_DIR}/info/info.cmake)
@@ -38,8 +37,6 @@ set(libs
     kautil::sqlite3::preprocessors::${${PROJECT_NAME}.version}::static
     kautil::sqlite3::alter::${${PROJECT_NAME}.version}::static
     kautil::c11_string_allocator::0.0.1::static)
-
-
 
 list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx ${m}_sqlite3_headers)
 string(APPEND ${m}_findpkgs
@@ -75,7 +72,6 @@ set(${module_name}_common_pref
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
-    EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs}
     DESTINATION_INCLUDE_DIR include
     DESTINATION_CMAKE_DIR cmake
     DESTINATION_LIB_DIR lib
@@ -84,10 +80,15 @@ set(${module_name}_common_pref
 file(GLOB ${m}_sqlite3_headers ${CMAKE_CURRENT_LIST_DIR}/*.h)
 install(FILES ${${m}_sqlite3_headers} DESTINATION include/kautil/sqlite3)
 
-foreach(__lib shared static )
-    CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref} )
-    target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
-endforeach()
+if(${BUILD_SHARED_LIBS})
+    set(${m}_libtype shared )
+else()
+    set(${m}_libtype static )
+    list(APPEND ${module_name}_common_pref EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs})
+endif()
+
+CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref})
+target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
 
 
 foreach(__v ${${m}_unsetter})
