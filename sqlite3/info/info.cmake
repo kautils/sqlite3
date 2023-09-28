@@ -36,7 +36,7 @@ endif()
 
 install(FILES "${KAUTIL_LIBSQLITE3_LIBDIR}/libsqlite3_${${m}_sqlite3_version}${CMAKE_STATIC_LIBRARY_SUFFIX}" DESTINATION lib)
 file(GLOB ${m}_sqlite3_includes ${KAUTIL_LIBSQLITE3_INCLUDE_DIR}/*.h)
-install(FILES ${${m}_sqlite3_includes} DESTINATION include/kautil/sqlite3)
+install(FILES ${${m}_sqlite3_includes} DESTINATION include/kautil/sqlite3/org)
 
 CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE interface ${${module_name}_common_pref} )
 target_link_libraries(${${module_name}_interface} INTERFACE $<BUILD_INTERFACE:${KAUTIL_LIBSQLITE3_LIBDIR}/lib${KAUTIL_LIBSQLITE3_LIBNAME}${CMAKE_STATIC_LIBRARY_SUFFIX}>)
