@@ -82,13 +82,19 @@ install(FILES ${${m}_sqlite3_headers} DESTINATION include/kautil/sqlite3)
 
 if(${BUILD_SHARED_LIBS})
     set(${m}_libtype shared )
-else()
+elseif(${BUILD_STATIC_LIBS})
     set(${m}_libtype static )
-    list(APPEND ${module_name}_common_pref EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs})
+else()
+    set(${m}_libtype static shared )
 endif()
 
-CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${${m}_libtype} ${${module_name}_common_pref})
-target_link_directories(${${module_name}_${${m}_libtype}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
+foreach(__lib ${${m}_libtype})
+    if(${__lib} STREQUAL static)
+        list(APPEND ${module_name}_common_pref EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs})
+    endif()
+    CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref})
+    target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
+endforeach()
 
 
 foreach(__v ${${m}_unsetter})
