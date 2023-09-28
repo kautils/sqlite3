@@ -1,7 +1,0 @@
-
-set(KautilSqlite3.2.0.1.0Stmt.static_VERSION@PROJECT_VERSION@)
-@PACKAGE_INIT@
-set(KautilSqlite3.2.0.1.0Stmt.static_DIR "${CMAKE_CURRENT_LIST_DIR}")
-set(KautilSqlite3.2.0.1.0Stmt.static_SYSCONFIG_DIR "${CMAKE_CURRENT_LIST_DIR}")
-include("${CMAKE_CURRENT_LIST_DIR}/KautilSqlite3.2.0.1.0Stmt.static.cmake")
-check_required_components(KautilSqlite3.2.0.1.0Stmt.static)
