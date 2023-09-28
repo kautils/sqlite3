@@ -87,8 +87,8 @@ else()
     list(APPEND ${module_name}_common_pref EXPORT_CONFIG_IN_ADDITIONAL_CONTENT_BEFORE ${${m}_findpkgs})
 endif()
 
-CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${__lib} ${${module_name}_common_pref})
-target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
+CMakeLibraryTemplate(${module_name} EXPORT_LIB_TYPE ${${m}_libtype} ${${module_name}_common_pref})
+target_link_directories(${${module_name}_${${m}_libtype}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
 
 
 foreach(__v ${${m}_unsetter})
