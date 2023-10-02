@@ -68,7 +68,7 @@ set(${module_name}_common_pref
     MODULE_NAME ${module_name}
     INCLUDES $<BUILD_INTERFACE:${__include_dir}> $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include> $<INSTALL_INTERFACE:include> 
     SOURCES ${srcs}
-    LINK_LIBS ${libs} kautil_debug_nvwa_0.0.1_static
+    LINK_LIBS ${libs}
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
