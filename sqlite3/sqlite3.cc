@@ -35,7 +35,10 @@ struct Sqlite3Internal{
         {// release stmt to avoid memory leak. it seemed to be impossible to release stmt object after close database connection.
             auto stmts = reinterpret_cast<::sqlite3_stmt**>(mem_stmt.data());
             for(auto i = 0; i < mem_stmt.size() / sizeof(uintptr_t); ++i){
-                if(stmts[i]){ sqlite3_finalize(stmts[i]);stmts[i] = 0; }
+                if(stmts[i]){ 
+                    sqlite3_finalize(stmts[i]);
+                    stmts[i] = 0;
+                }
             }
             mem_stmt.resize(0);
         }
@@ -230,7 +233,7 @@ bool Sqlite3::foreign_key(bool sw){
       ,"PRAGMA foreign_keys = ON"      
     };
     if(!m->foreign_key_sw)m->foreign_key_sw = compile(kSentece[sw]);
-    return m->foreign_key_sw ? m->foreign_key_sw->step(true) : false; 
+    return m->foreign_key_sw ? (SQLITE_OK == m->foreign_key_sw->step(true)) : false; 
 }
 
 
@@ -361,12 +364,13 @@ extern "C" void extern_finalize(kautil::database::Sqlite3* m ){
 }
 
 
-int tmain_kautil_sqlite3_shared(){
+int tmain_kautil_sqlite3_static(){
     //while(true){
     
     auto op = kautil::database::sqlite3::sqlite_options(); // only a partial wrapper of sqlite options. this is for extern module.  
     auto sql = kautil::database::Sqlite3{":memory:"};
     sql.foreign_key(true); // pragma foreign key on
+    
     
     auto fn = sql.file_name();
     auto schema = sql.schema();
@@ -378,7 +382,7 @@ int tmain_kautil_sqlite3_shared(){
             create->release();
         }else sql.error_msg();
     }
-
+    
     {// stmt : insert
         if(auto insert = sql.compile("insert into test(data,i64) values(?,?)")){
             for(auto i =0 ; i < 5; ++i){
@@ -398,6 +402,8 @@ int tmain_kautil_sqlite3_shared(){
         }
     }
 
+
+
     {// stmt : select
         if(auto select = sql.compile("select data,i64 from test")){
             for(;;){
@@ -410,6 +416,8 @@ int tmain_kautil_sqlite3_shared(){
                 printf("%.*x %lld\n",sqlite3_column_bytes(stmt,0),sqlite3_column_blob(stmt,0),sqlite3_column_int64(stmt,1));
                 fflush(stdout);
             }
+            
+            select->release();
         }else sql.error_msg();
     }
 

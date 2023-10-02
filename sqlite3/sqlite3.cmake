@@ -68,7 +68,7 @@ set(${module_name}_common_pref
     MODULE_NAME ${module_name}
     INCLUDES $<BUILD_INTERFACE:${__include_dir}> $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include> $<INSTALL_INTERFACE:include> 
     SOURCES ${srcs}
-    LINK_LIBS ${libs}
+    LINK_LIBS ${libs} kautil_debug_nvwa_0.0.1_static
     EXPORT_NAME_PREFIX ${PROJECT_NAME}
     EXPORT_VERSION ${PROJECT_VERSION}
     EXPORT_VERSION_COMPATIBILITY AnyNewerVersion
@@ -96,6 +96,13 @@ foreach(__lib ${${m}_libtype})
     target_link_directories(${${module_name}_${__lib}} PRIVATE ${KAUTIL_LIBSQLITE3_LIBDIR})
 endforeach()
 
+set(__t ${${module_name}_static_tmain})
+add_executable(${__t})
+target_sources(${__t} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/unit_test.cc)
+target_link_libraries(${__t} PRIVATE ${${module_name}_static})
+target_compile_definitions(${__t} PRIVATE ${${module_name}_static_tmain_ppcs})
+
+
 
 foreach(__v ${${m}_unsetter})
     unset(${__v})
@@ -107,3 +114,5 @@ set(m ${${PROJECT_NAME}_m_evacu})
 
 
  
+
+
