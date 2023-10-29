@@ -12,15 +12,15 @@ else()
 endif()
 
 
-git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
-git_clone(https://raw.githubusercontent.com/kautils/CMakeFetchKautilModule/v0.0.1/CMakeFetchKautilModule.cmake)
+git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0/CMakeLibrarytemplate.cmake)
+git_clone(https://raw.githubusercontent.com/kautils/CMakeFetchKautilModule/v1.0/CMakeFetchKautilModule.cmake)
 git_clone(https://raw.githubusercontent.com/kautils/CMakeFindKautilModule/v0.0.1/CMakeFindKautilModule.cmake)
 
 if(${BUILD_SHARED_LIBS})
     set(${m}_install_dependencies NO_INSTALL)
 endif()
 
-CMakeFetchKautilModule(c11_string_allocator GIT https://github.com/kautils/c11_string_allocator.git REMOTE origin TAG v0.0.1)
+CMakeFetchKautilModule(c11_string_allocator GIT https://github.com/kautils/c11_string_allocator.git REMOTE origin BRANCH v0.0)
 CMakeFindKautilModule(c11_string_allocator NAME KautilC11StringAllocator.0.0.1.static ${${m}_install_dependencies})
 
 
@@ -47,24 +47,24 @@ set(libs
 
 list(APPEND ${m}_unsetter ${m}_findpkgs ${m}_prfx ${m}_sqlite3_headers)
 string(APPEND ${m}_findpkgs
-        
+
     "${c11_string_allocator.CONFIGURE_STRING}"
-        
+
     "set(@PROJECT_NAME@Info.interface_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Info.interface REQUIRED)\n\n"
-    
+
     "set(@PROJECT_NAME@Alters.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Alters.static REQUIRED)\n\n"
-    
+
     "set(@PROJECT_NAME@Stmt.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Stmt.static REQUIRED)\n\n"
-    
+
     "set(@PROJECT_NAME@Blob.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Blob.static REQUIRED)\n\n"
-    
+
     "set(@PROJECT_NAME@Serialize.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Serialize.static REQUIRED)\n\n"
-    
+
     "set(@PROJECT_NAME@Preprocessors.static_DIR ${CMAKE_CURRENT_LIST_DIR})\n"
     "find_package(@PROJECT_NAME@Preprocessors.static REQUIRED)\n\n"
 )
@@ -120,6 +120,6 @@ set(m ${${PROJECT_NAME}_m_evacu})
 
 
 
- 
+
 
 
