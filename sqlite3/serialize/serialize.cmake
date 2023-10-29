@@ -1,11 +1,4 @@
 
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-    file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeKautilHeader/v0.0.1/CMakeKautilHeader.cmake ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-endif()
-include(${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
-
-
 set(module_name serialize)
 unset(srcs)
 file(GLOB srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)

@@ -2,12 +2,6 @@ set(${PROJECT_NAME}_m_evacu ${m})
 set(m ${PROJECT_NAME}_vars)
 list(APPEND ${m}_unsetter )
 
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-    file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeKautilHeader/v0.0.1/CMakeKautilHeader.cmake ${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-endif()
-include(${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
-git_clone(https://raw.githubusercontent.com/kautils/CMakeLibrarytemplate/v0.0.1/CMakeLibrarytemplate.cmake)
-
 
 set(${m}_sqlite3_version 3.42.0)
 set(KAUTIL_LIBSQLITE3_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/mingw-w64-x86_64-sqlite3_${${m}_sqlite3_version}/lib CACHE STRING "path to libdir which includes sqlite" FORCE)
