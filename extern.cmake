@@ -1,3 +1,13 @@
+
+set(${m}_kautil_cmake_heeder CMakeKautilHeader.v0.0.cmake)
+if(DEFINED KAUTIL_THIRD_PARTY_DIR AND EXISTS "${KAUTIL_THIRD_PARTY_DIR}/${${m}_kautil_cmake_heeder}")
+    include("${KAUTIL_THIRD_PARTY_DIR}/${${m}_kautil_cmake_heeder}")
+else()
+    if(NOT EXISTS ${CMAKE_BINARY_DIR}/${${m}_kautil_cmake_heeder})
+        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeKautilHeader/v0.0/CMakeKautilHeader.cmake ${CMAKE_BINARY_DIR}/${${m}_kautil_cmake_heeder})
+    endif()
+    include(${CMAKE_BINARY_DIR}/${${m}_kautil_cmake_heeder})
+endif()
 include(${CMAKE_CURRENT_LIST_DIR}/sqlite3/sqlite3.cmake)
 
 
